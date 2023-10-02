@@ -20,18 +20,21 @@ div.circle{
 <div class=circle></div>
 </section><script>
 
-const sock = new WebSocket("ws://eddie.local/ws")
+var sock = new WebSocket("ws://eddie.local/ws")
 
-document.querySelector('div.circle').onMouseDown = ()=>{
-    document.querySelector('div.circle').onMouseMove = e=>{
+document.querySelector('div.circle').onmousedown = ()=>{
+    document.querySelector('div.circle').onmousemove = e=>{
         let max_axis = Math.min(window.innerWidth, window.innerHeight) * 0.15
         let x = Math.min(Math.max( (e.clientX - window.innerWidth/2)/max_axis, -1), 1) * 100
         let y = Math.min(Math.max( (e.clientY - window.innerHeight/2)/max_axis, -1), 1) * 100
 
-        sock.send(JSON.stringify([y, x]))
+        console.log(JSON.stringify([-y, x]))
+        if(sock.readyState === 'connected'){
+            sock.send(JSON.stringify([-y, x]))
+        }
     }
-    document.querySelector('div.circle').onMouseUp = ()=>{
-        document.querySelector('div.circle').onMouseMove = null
+    document.querySelector('div.circle').onmouseup = ()=>{
+        document.querySelector('div.circle').onmousemove = null
     }
 }
 </script></body>
