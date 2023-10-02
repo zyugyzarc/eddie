@@ -40,7 +40,31 @@ class Driver:
         self.L.value = throttle + steer
         self.R.value = throttle - steer
 
+"""
 class Agent:
     def __init__(self, driver):
         self.driver = driver
         self.position = np.array((0, 0))
+"""
+
+# temporary
+# Control eddie through http server
+
+driver = Driver(-1, -1, -1, -1)
+
+from HTTPWebSocketsHandler import HTTPWebSocketsHandler
+from http.server import HTTPServer
+import json
+
+class EddieServer(HTTPWebSocketsHandler):
+
+    def do_get(self):
+        with open('client.html', 'rb') as f:
+            self.send_response(200)
+            self.end_headers()
+            self.wfile.write(f.read())
+
+    def on_ws_message(self, message):
+        driver.drive(*json.loads(message))
+
+HTTPServer(('0.0.0.0', 8888), EddieServer).serve_forever()
